@@ -29,14 +29,15 @@ function onSearchInput(e) {
 }
 
 function initiateSearch(countryToSearch) {
+    console.log("countryToSearch.length", countryToSearch.length)
   if (countryToSearch.length > 0) {
     fetchCountries(countryToSearch)
       .then(allResultsFilter)
-      .catch(error => {
-        Notiflix.Notify.failure(
-          `Виникла помилка - ${error.message}, спробуйте пізніше`
-        );
-      });
+    //   .catch(error => {
+    //     Notiflix.Notify.failure(
+    //       `Виникла помилка - ${error.message}, спробуйте пізніше`
+    //     );
+    //   });
   }
 }
 
