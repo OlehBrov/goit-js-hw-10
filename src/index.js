@@ -3,8 +3,9 @@ import './css/styles.css';
 import { fetchCountries } from './scripts/fetchCountries';
 
 Notiflix.Notify.init({
-    fontSize: '14px',
-      position: 'right-bottom',
+  fontSize: '18px',
+  position: 'right-bottom',
+  width: '350px',
 });
 
 const Mustache = require('mustache');
@@ -20,29 +21,33 @@ let inputControl = true;
 searchInput.addEventListener('input', debounce(onSearchInput, DEBOUNCE_DELAY));
 // countryList.addEventListener('click', openSelectedElement)
 // function inputCangeControl(countryToSearch) {
-    
+
 // }
 function onSearchInput(e) {
   e.preventDefault();
   countryToSearch = e.target.value.trim();
   console.log('countryToSearch', countryToSearch.length);
 
-    if (inputControl) {
-        fetchCountries(countryToSearch).then(allResultsFilter).catch((error) => {
-            console.dir(error);
-            Notiflix.Notify.failure(`Виникла помилка - ${error.message}, спробуйте пізніше`)
-    });
+  if (inputControl) {
+    fetchCountries(countryToSearch)
+      .then(allResultsFilter)
+      .catch(error => {
+        console.dir(error);
+        Notiflix.Notify.failure(
+          `Виникла помилка - ${error.message}, спробуйте пізніше`
+        );
+      });
   }
 }
 
 function allResultsFilter(fetchedData) {
-    countryList.innerHTML = '';
-    countryInfo.innerHTML = '';
+  countryList.innerHTML = '';
+  countryInfo.innerHTML = '';
 
   if (fetchedData.length > 10) {
     notificationTooManyResults();
   }
-    if (fetchedData.length > 2 && fetchedData.length <= 10) {
+  if (fetchedData.length > 2 && fetchedData.length <= 10) {
     markupList(fetchedData);
   }
   if (fetchedData.length === 1) {
@@ -52,11 +57,13 @@ function allResultsFilter(fetchedData) {
 }
 
 function notificationTooManyResults() {
-  Notiflix.Notify.warning(
-    'Too many matches found. Please enter a more specific name.'
+  Notiflix.Notify.info(
+    'Too many matches found. Please enter a more specific name.',
+    {
+      timeout: 0,
+    }
   );
 }
-
 
 function markupList(countries) {
   let markup = countries
@@ -72,22 +79,20 @@ function markupList(countries) {
   countryList.insertAdjacentHTML('afterbegin', markup);
 }
 
-
 function countryCardMarkup(countries) {
-    console.log(countries)
-    countryList.innerHTML = '';
-    const country = countries[0]
-            console.log("before-map", country)
+  console.log(countries);
+  countryList.innerHTML = '';
+  const country = countries[0];
+  console.log('before-map', country);
 
-        country.langs = country.languages.map(x => x.name).join(", ");
-        console.log(country)
-        console.log(country.name)    
+  country.langs = country.languages.map(x => x.name).join(', ');
+  console.log(country);
+  console.log(country.name);
 
-    let markup = `<img src="${country.flags.svg}" alt="flag of ${country.name}", width="50px" class="country-flag"><h2 class="card-header">${country.name}</h2>
+  let markup = `<img src="${country.flags.svg}" alt="flag of ${country.name}", width="50px" class="country-flag"><h2 class="card-header">${country.name}</h2>
     <p class="country-data">Capital: <span style="font-weight: 400;">${country.capital}</span></p>
     <p class="country-data">Population: <span style="font-weight: 400;">${country.population}</span></p>
-    <p class="country-data">Languages: <span style="font-weight: 400;">${country.langs}</span></p>`
-    ;
+    <p class="country-data">Languages: <span style="font-weight: 400;">${country.langs}</span></p>`;
   countryInfo.insertAdjacentHTML('afterbegin', markup);
 }
 
