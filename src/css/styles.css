@@ -20,28 +20,30 @@ body {
   margin-bottom: 16px;
 }
 
-
-ul{
+ul {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
-.list-item{
+.list-item {
   display: flex;
 }
-.country-list-item{
+.country-list-item {
   margin-left: 10px;
   margin-bottom: auto;
   margin-top: auto;
   font-size: 20px;
   cursor: pointer;
 }
-.card-header{
+.card-header {
   display: inline;
 }
-.country-info > .country-flag{
+.country-info > .country-flag {
   margin-right: 10px;
 }
-.country-data{
+.country-data {
   font-weight: 700;
 }

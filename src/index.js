@@ -71,7 +71,7 @@ function markupList(countries) {
     .map(
       ({ name, flags }) =>
         `<li class="list-item">
-<img src="${flags.svg}" alt="flag of ${name}" width="40px" height="40px">
+<img src="${flags.svg}" alt="flag of ${name}" width="40px">
 <p class="country-list-item">${name}
 </p>
 </li>`
@@ -84,11 +84,8 @@ function countryCardMarkup(countries) {
   console.log(countries);
   countryList.innerHTML = '';
   const country = countries[0];
-  console.log('before-map', country);
 
   country.langs = country.languages.map(x => x.name).join(', ');
-  console.log(country);
-  console.log(country.name);
 
   let markup = `<img src="${country.flags.svg}" alt="flag of ${country.name}", width="50px" class="country-flag"><h2 class="card-header">${country.name}</h2>
     <p class="country-data">Capital: <span style="font-weight: 400;">${country.capital}</span></p>
