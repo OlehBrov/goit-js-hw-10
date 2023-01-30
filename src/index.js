@@ -92,7 +92,7 @@ function countryCardMarkup(countries) {
 
   let markup = `<img src="${country.flags.svg}" alt="flag of ${country.name}", width="50px" class="country-flag"><h2 class="card-header">${country.name}</h2>
     <p class="country-data">Capital: <span style="font-weight: 400;">${country.capital}</span></p>
-    <p class="country-data">Population: <span style="font-weight: 400;">${country.population}</span></p>
+    <p class="country-data">Population: <span style="font-weight: 400;">${country.population.toLocaleString('uk-UA')}</span></p>
     <p class="country-data">Languages: <span style="font-weight: 400;">${country.langs}</span></p>`;
   countryInfo.insertAdjacentHTML('afterbegin', markup);
 }
