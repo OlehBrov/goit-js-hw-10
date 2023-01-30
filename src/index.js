@@ -3,7 +3,8 @@ import './css/styles.css';
 import { fetchCountries } from './scripts/fetchCountries';
 
 Notiflix.Notify.init({
-  fontSize: '14px',
+    fontSize: '14px',
+      position: 'right-bottom',
 });
 
 const Mustache = require('mustache');
@@ -17,26 +18,35 @@ let countryToSearch = '';
 let inputControl = true;
 
 searchInput.addEventListener('input', debounce(onSearchInput, DEBOUNCE_DELAY));
-
+// countryList.addEventListener('click', openSelectedElement)
+// function inputCangeControl(countryToSearch) {
+    
+// }
 function onSearchInput(e) {
   e.preventDefault();
   countryToSearch = e.target.value.trim();
-  console.log(countryToSearch);
+  console.log('countryToSearch', countryToSearch.length);
 
-  if (inputControl) {
-    fetchCountries(countryToSearch).then(allResultsFilter);
+    if (inputControl) {
+        fetchCountries(countryToSearch).then(allResultsFilter).catch((error) => {
+            console.dir(error);
+            Notiflix.Notify.failure(`Виникла помилка - ${error.message}, спробуйте пізніше`)
+    });
   }
 }
 
 function allResultsFilter(fetchedData) {
+    countryList.innerHTML = '';
+    countryInfo.innerHTML = '';
+
   if (fetchedData.length > 10) {
     notificationTooManyResults();
   }
-  if (fetchedData.length > 2 && fetchedData.length <= 10) {
+    if (fetchedData.length > 2 && fetchedData.length <= 10) {
     markupList(fetchedData);
   }
   if (fetchedData.length === 1) {
-    inputControl = false;
+    // inputControl = false;
     countryCardMarkup(fetchedData);
   }
 }
@@ -47,13 +57,14 @@ function notificationTooManyResults() {
   );
 }
 
+
 function markupList(countries) {
   let markup = countries
     .map(
       ({ name, flags }) =>
-        `<li class="list_item">
+        `<li class="list-item">
 <img src="${flags.svg}" alt="flag of ${name}" width="40px" height="40px">
-<p class="country">${name}
+<p class="country-list-item">${name}
 </p>
 </li>`
     )
@@ -61,22 +72,26 @@ function markupList(countries) {
   countryList.insertAdjacentHTML('afterbegin', markup);
 }
 
+
 function countryCardMarkup(countries) {
-  countryList.innerHTML = '';
-  console.log('should be one country', countries);
-  let markup = countries
-    .flatMap(
-      ({ name, capital, population, flags, languages }) =>
-        // console.log(langName)
-        `<h2><img src="${flags.svg}" alt="flaf of ${name}"></h2>
-    <p class="country-data">Capital: <span>${capital}</span></p>
-    <p class="country-data">Population: <span>${population}</span></p>
-    <p class="country-data">Languages: <span>${languages.map(
-      language => language.name
-    )}</span></p>`
-    )
-    .join('');
+    console.log(countries)
+    countryList.innerHTML = '';
+    const country = countries[0]
+            console.log("before-map", country)
+
+        country.langs = country.languages.map(x => x.name).join(", ");
+        console.log(country)
+        console.log(country.name)    
+
+    let markup = `<img src="${country.flags.svg}" alt="flag of ${country.name}", width="50px" class="country-flag"><h2 class="card-header">${country.name}</h2>
+    <p class="country-data">Capital: <span style="font-weight: 400;">${country.capital}</span></p>
+    <p class="country-data">Population: <span style="font-weight: 400;">${country.population}</span></p>
+    <p class="country-data">Languages: <span style="font-weight: 400;">${country.langs}</span></p>`
+    ;
   countryInfo.insertAdjacentHTML('afterbegin', markup);
 }
 
-// console.log("fetchCountries", fetchCountries("cuba"))
+// function openSelectedElement(e) {
+//     console.log(e.target.textContent)
+// fetchCountries(e.target.textContent).then(allResultsFilter);
+// }
