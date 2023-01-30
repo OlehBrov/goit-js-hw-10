@@ -4,8 +4,9 @@ import { fetchCountries } from './scripts/fetchCountries';
 
 Notiflix.Notify.init({
   fontSize: '18px',
-  position: 'right-bottom',
+  position: 'right-top',
   width: '350px',
+  distance: '50px',
 });
 
 const Mustache = require('mustache');
@@ -19,20 +20,19 @@ let countryToSearch = '';
 let inputControl = true;
 
 searchInput.addEventListener('input', debounce(onSearchInput, DEBOUNCE_DELAY));
-// countryList.addEventListener('click', openSelectedElement)
-// function inputCangeControl(countryToSearch) {
+countryList.addEventListener('click', openSelectedElement);
 
-// }
 function onSearchInput(e) {
   e.preventDefault();
   countryToSearch = e.target.value.trim();
-  console.log('countryToSearch', countryToSearch.length);
+  initiateSearch(countryToSearch);
+}
 
-  if (inputControl) {
+function initiateSearch(countryToSearch) {
+  if (countryToSearch.length > 0) {
     fetchCountries(countryToSearch)
       .then(allResultsFilter)
       .catch(error => {
-        console.dir(error);
         Notiflix.Notify.failure(
           `Виникла помилка - ${error.message}, спробуйте пізніше`
         );
@@ -51,7 +51,6 @@ function allResultsFilter(fetchedData) {
     markupList(fetchedData);
   }
   if (fetchedData.length === 1) {
-    // inputControl = false;
     countryCardMarkup(fetchedData);
   }
 }
@@ -59,8 +58,10 @@ function allResultsFilter(fetchedData) {
 function notificationTooManyResults() {
   Notiflix.Notify.info(
     'Too many matches found. Please enter a more specific name.',
+
     {
-      timeout: 0,
+      timeout: 3000,
+      showOnlyTheLastOne: true,
     }
   );
 }
@@ -96,7 +97,8 @@ function countryCardMarkup(countries) {
   countryInfo.insertAdjacentHTML('afterbegin', markup);
 }
 
-// function openSelectedElement(e) {
-//     console.log(e.target.textContent)
-// fetchCountries(e.target.textContent).then(allResultsFilter);
-// }
+function openSelectedElement(e) {
+  if (e.target.nodeName === 'P') {
+    initiateSearch(e.target.textContent);
+  }
+}
